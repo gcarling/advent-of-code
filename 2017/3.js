@@ -49,6 +49,7 @@ _.each(_.range(5), num => {
 
     const neighbors = [];
 
+    // for part 1 just use ind rather than this calculation
     for (r = i-1; r <= i+1; r++) {
       for (c = j-1; c <= j+1; c++) {
         if (r === i && c === j) continue;
@@ -56,7 +57,6 @@ _.each(_.range(5), num => {
         neighbors.push((spiral[r] || [])[c]);
       }
     }
-
     const total = start === 1 ? 1 : _.sum(_.filter(neighbors, num => num && num !== -1));
 
     if (total > input && !found) {
