@@ -31,10 +31,11 @@ _.each(_.range(5), num => {
   let i = start - 2;
   let j = start - 1;
 
-  if (start == 1) {
+  if (start === 1) {
     i = 0;
   }
 
+  // bound of grid
   const end = start - 1;
 
   const lastStart = _.max([start - 2, 0]);
@@ -43,25 +44,18 @@ _.each(_.range(5), num => {
 
   const newSize = start * start;
 
-  const diff = newSize - oldSize;
-
   _.each(_.range(oldSize, newSize), index => {
     const ind = index + 1;
 
-    // console.log('setting:', i, j, 'to', ind);
+    const neighbors = [];
 
-    // const neighbors = [];
+    for (r = i-1; r <= i+1; r++) {
+      for (c = j-1; c <= j+1; c++) {
+        if (r === i && c === j) continue;
 
-    const a = (spiral[i-1] || [])[j-1];
-    const b = (spiral[i-1] || [])[j];
-    const c = (spiral[i-1] || [])[j+1];
-    const d = (spiral[i] || [])[j+1];
-    const e = (spiral[i+1] || [])[j+1];
-    const f = (spiral[i+1] || [])[j];
-    const g = (spiral[i+1] || [])[j-1];
-    const h = (spiral[i])[j-1];
-
-    const neighbors = [a, b, c, d, e, f, g, h];
+        neighbors.push((spiral[r] || [])[c]);
+      }
+    }
 
     const total = start === 1 ? 1 : _.sum(_.filter(neighbors, num => num && num !== -1));
 
