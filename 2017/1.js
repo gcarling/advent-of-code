@@ -4,11 +4,22 @@ const num = '4281224989975872839961169513979579335691369498483794171253625322698
 
 const input = num.split('').map(_.toNumber);
 
-const ans = _.reduce(input, (sum, cur, i) => {
+const ans1 = _.reduce(input, (sum, cur, i) => {
   const next = i === input.length - 1 ? input[0] : input[i+1];
 
   if (cur === next) return sum + next;
   return sum;
 }, 0);
 
-console.log(ans);
+console.log(ans1);
+
+const stepSize = input.length / 2;
+
+const ans2 = _.reduce(input, (sum, cur, i) => {
+  const next = input[(i + stepSize) % input.length];
+
+  if (cur === next) return sum + next;
+  return sum;
+}, 0);
+
+console.log(ans2);
