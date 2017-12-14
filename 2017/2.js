@@ -19,7 +19,7 @@ const input = [
   [1567, 3246, 4194, 151, 3112, 903, 1575, 134, 150, 4184, 3718, 4077, 180, 4307, 4097, 1705]
 ];
 
-const getRowDiff = row => Math.abs(_.maxBy(row) - _.minBy(row));
+const getRowDiff = row => Math.abs(_.max(row) - _.min(row));
 
 const ans1 = _.sum(_.map(input, getRowDiff));
 
