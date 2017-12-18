@@ -122,4 +122,3 @@ ans = deepestProblem['node']['weight'] + diff
 
 print 'ANSWER 2\n'
 print ans
-
