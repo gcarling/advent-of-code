@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+func happinessValue(to string, from string, happinessMap map[string]map[string]int) int {
+	if (to == "Graham" || from == "Graham") {
+		return 0
+	}
+	return happinessMap[from][to]
+}
+
 func getPermutations(input []string) [][]string {
 	output := make([][]string, 0)
 
@@ -47,8 +54,7 @@ func countArrangement(input []string, happinessMap map[string]map[string]int) in
 			right = input[i+1]
 		}
 
-		myMap := happinessMap[person]
-		total = total + myMap[left] + myMap[right]
+		total = total + happinessValue(left, person, happinessMap) + happinessValue(right, person, happinessMap)
 	}
 	return total
 }
@@ -94,7 +100,7 @@ func main() {
 		allPeople = append(allPeople, k)
 	}
 
-	permutations := getPermutations(allPeople)
+	permutations := getPermutations(append(allPeople, "Graham"))
 
 	for _,permutation := range permutations {
 		val := countArrangement(permutation, happinessMap)
