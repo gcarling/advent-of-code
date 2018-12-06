@@ -4,6 +4,7 @@ const fs = require('fs');
  
 fs.readFile('in.txt', 'utf8', function(err, contents) {
   const nums = contents.split('\n');
+  nums.pop();
 
   let total = 0;
 
@@ -11,12 +12,9 @@ fs.readFile('in.txt', 'utf8', function(err, contents) {
 
   while (true) {
     _.each(nums, numStr => {
-      const num = parseInt(numStr, 10)
-      if (isNaN(num)) return;
-  
+      const num = parseInt(numStr, 10);
+
       total += num;
-  
-      // console.log(total);
   
       if (reached[total]) {
         console.log(total);
