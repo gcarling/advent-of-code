@@ -12,7 +12,9 @@ fs.readFile(IS_TEST ? 'test.txt' : 'in.txt', 'utf8', function(err, contents) {
   let input = contents.split('\n');
   input.pop();
 
-  
+  input.forEach(line => {
+
+  });  
 
   console.log('ans: ', ans);
 });
