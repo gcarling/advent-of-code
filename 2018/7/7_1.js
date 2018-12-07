@@ -9,7 +9,7 @@ fs.readFile(IS_TEST ? 'test.txt' : 'in.txt', 'utf8', function(err, contents) {
   let input = contents.split('\n');
   input.pop();
 
-  const maps = [];
+  const mapping = {};
 
   const all = new Set([]);
 
@@ -18,52 +18,35 @@ fs.readFile(IS_TEST ? 'test.txt' : 'in.txt', 'utf8', function(err, contents) {
     const from = split[1];
     const to = split[7];
 
-    maps.push({ to, from });
+    if (mapping[from]) {
+      mapping[from].push(to);
+    } else {
+      mapping[from] = [to];
+    }
 
     all.add(to);
     all.add(from);
   });
 
-  const roots = new Set(all);
+  const output = [];
 
-  maps.forEach(item => {
-    const { to } = item;
-    roots.delete(to);
-  });
+  function getAvailable(mapping, output) {
+    return _.filter(Array.from(all), loc => {
+      if (_.includes(output, loc)) return false;
 
-  const available = [];
-
-  let output = [];
-
-  roots.forEach(x => {
-    available.push(x);
-  });
+      return _.every(mapping, (to, from) => {
+        if (_.includes(to, loc) && !_.includes(output, from)) {
+          return false;
+        }
+        return true;
+      });
+    });
+  }
 
   while (_.size(output) < _.size(all)) {
+    const available = getAvailable(mapping, output);
     available.sort();
-
-    const next = available.shift();
-    
-    // did it already
-    if (_.includes(output, next)) continue;
-
-    output.push(next);
-
-    maps.forEach(({ to, from }) => {
-      if (next !== from) return;
-
-      let valid = true;
-
-      maps.forEach(another => {
-        if (another.to !== to) return;
-
-        if (!_.includes(output, another.from)) {
-          valid = false;
-        }
-      });
-
-      if (valid) available.push(to);
-    });
+    output.push(available[0]);
   }
 
   ans = output.join('');
