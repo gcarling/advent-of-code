@@ -38,13 +38,16 @@ const transforms =
 ##... => #`.split('\n');
 
 const ITERATIONS = 20;
-const PADDING = 50;
+const PADDING = 3;
 
 const padding = _.times(PADDING, () => '.');
 
-let currentState = [...padding, ...INITIAL_STATE.split(''), ...padding];
+let offset = 0;
+
+let currentState = INITIAL_STATE.split('');
 
 for (let i = 0; i < ITERATIONS; i++) {
+  currentState = [...padding, ...currentState, ...padding];
   currentState = currentState.map((pot, ind) => {
     const piece = currentState.slice(ind - 2, ind + 3).join('');
 
@@ -65,15 +68,20 @@ for (let i = 0; i < ITERATIONS; i++) {
 
     return '.';
   });
+
+  const firstIndex = _.indexOf(currentState, '#');
+  const lastIndex = _.lastIndexOf(currentState, '#');
+
+  currentState = currentState.slice(firstIndex, lastIndex+1);
+
+  offset += firstIndex - PADDING;
 }
 
 let ans = 0;
 
-const offset = PADDING;
-
 for (let pot = 0; pot < _.size(currentState); pot++) {
   if (currentState[pot] === '#') {
-    ans += pot - offset;
+    ans += pot + offset;
   }
 }
 
