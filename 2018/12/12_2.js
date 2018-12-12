@@ -37,7 +37,7 @@ const transforms =
 .##.. => .
 ##... => #`.split('\n');
 
-const ITERATIONS = 20;
+const ITERATIONS = 5000000;
 const PADDING = 3;
 
 const padding = _.times(PADDING, () => '.');
@@ -46,7 +46,15 @@ let offset = 0;
 
 let currentState = INITIAL_STATE.split('');
 
-for (let i = 0; i < ITERATIONS; i++) {
+let prevState;
+
+let i;
+
+for (i = 0; i < ITERATIONS; i++) {
+  if (_.isEqual(currentState, prevState)) {
+    break;
+  }
+  prevState = currentState;
   currentState = [...padding, ...currentState, ...padding];
   currentState = currentState.map((pot, ind) => {
     const piece = currentState.slice(ind - 2, ind + 3).join('');
@@ -76,6 +84,12 @@ for (let i = 0; i < ITERATIONS; i++) {
 
   offset += firstIndex - PADDING;
 }
+
+const MAX = 50000000000;
+
+offset += MAX - i
+
+console.log('MAX: ', MAX);
 
 let ans = 0;
 
