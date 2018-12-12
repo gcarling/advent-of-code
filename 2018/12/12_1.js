@@ -91,8 +91,6 @@ let ans = 0;
 
 const offset = PADDING;
 
-console.log(currentState.join(''));
-
 for (let pot = 0; pot < _.size(currentState); pot++) {
   if (currentState[pot] === '#') {
     ans += pot - offset;
