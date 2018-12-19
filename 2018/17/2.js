@@ -161,9 +161,7 @@ fs.readFile(IS_TEST ? 'test.txt' : 'in.txt', 'utf8', function(err, contents) {
 
   const minY = _.min(_.minBy(clayPoints, ({ y }) => _.min(y)).y);
 
-  console.log('minY: ', minY);
-
-  ans = _.sumBy(grid, (row, ind) => ind < minY ? 0 : _.sumBy(row, square => isWater(square) ? 1 : 0));
+  ans = _.sumBy(grid, row => _.sumBy(row, square => square === mats.WATER_STILL ? 1 : 0));
 
   // printGridWindow(grid);
 
