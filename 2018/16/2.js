@@ -56,12 +56,14 @@ const ops = {
   },
 };
 
+const possibleMatchings = _.mapValues(ops, () => []);
+
 function parseToArray(line) {
   const items = line.split(': ')[1].replace('[', '').replace(']', '').split(', ');
   return items.map(utils.parseNum);
 }
 
-function getNumMatches(input) {
+function checkMatches(input) {
   const lines = input.split('\n');
   const start = parseToArray(lines[0]);
   const end = parseToArray(lines[2]);
@@ -70,13 +72,56 @@ function getNumMatches(input) {
 
   const [opCode, a, b, c] = instruction;
 
-  const matching = _.filter(ops, op => {
+  _.each(ops, (op, name) => {
     registers = _.cloneDeep(start);
     op(a, b, c);
-    return _.isEqual(registers, end);
-  });
+    const eq = _.isEqual(registers, end);
 
-  return _.size(matching);
+    if (!eq) {
+      possibleMatchings[name] = _.reject(possibleMatchings[name], code => code === opCode);
+    } else {
+      if (!_.includes(possibleMatchings[name], opCode)) {
+        possibleMatchings[name].push(opCode);
+      }
+    }
+  });
+}
+
+function getFinalMatchings() {
+  const finalMappings = {};
+  const handled = new Set([]);
+
+  let tempMatchings = possibleMatchings;
+  
+  for (let i = 0; i < 16; i++) {
+    const cur = _.findKey(tempMatchings, (value, key) => {
+      return !handled.has(key) && _.size(value) === 1;
+    });
+
+    const mappedVal = _.first(tempMatchings[cur])
+
+    finalMappings[cur] = mappedVal;
+    handled.add(cur);
+    
+    tempMatchings = _.mapValues(tempMatchings, (value, key) => {
+      if (key === cur) return value;
+
+      return _.reject(value, v => v === mappedVal);
+    });
+  }
+
+  return finalMappings;
+}
+
+function getFuncForCode(opCode, matchings) {
+  const funcName = _.findKey(matchings, value => value === opCode);
+  return ops[funcName];
+}
+
+function processInstructionLine(line, matchings) {
+  const instr = line.split(' ').map(utils.parseNum);
+  const [opCode, a, b, c] = instr;
+  getFuncForCode(opCode, matchings)(a, b, c);
 }
 
 const IS_TEST = 0;
@@ -86,7 +131,21 @@ fs.readFile(IS_TEST ? 'test.txt' : 'in_1.txt', 'utf8', function(err, contents) {
 
   let input = contents.split('\n\n');
 
-  ans = _.sumBy(input, item => getNumMatches(item) >= 3 ? 1 : 0);
+  _.each(input, item => checkMatches(item));
 
-  console.log('ans: ', ans);
+  const matchings = getFinalMatchings();
+
+  fs.readFile(IS_TEST ? 'test.txt' : 'in_2.txt', 'utf8', function(err, contents2) {
+    input = contents2.split('\n');
+    input.pop();
+
+    registers = [0, 0, 0, 0];
+
+    _.each(input, line => processInstructionLine(line, matchings));
+
+    ans = registers[0];
+
+    console.log('ans: ', ans);
+
+  });
 });
