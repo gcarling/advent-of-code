@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 
 def solution(file_name):
     for line in open(file_name):
-        print(line, end='')
+        print(line.rstrip("\n"))
 
 if __name__=='__main__':
     print("Running...")
