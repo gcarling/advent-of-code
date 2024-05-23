@@ -5,8 +5,7 @@ def solution(file_name):
         print(line.rstrip("\n"))
 
 if __name__=='__main__':
-    print("Running...")
-    print('')
+    print("Running...\n")
     parser = ArgumentParser()
     parser.add_argument("-t", "--test", dest="is_test", help="Run in test mode", default=False, action='store_true')
     args = parser.parse_args()
